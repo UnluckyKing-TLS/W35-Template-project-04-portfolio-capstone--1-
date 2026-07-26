@@ -1,0 +1,13 @@
+{
+  "name": "destinara-travel-planner-root",
+  "version": "1.0.0",
+  "main": "project-04-portfolio-capstone/server.js",
+  "scripts": {
+    "start": "node project-04-portfolio-capstone/server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

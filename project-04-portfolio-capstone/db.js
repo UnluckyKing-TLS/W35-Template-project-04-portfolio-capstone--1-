@@ -2,20 +2,33 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-const DATA_DIR = path.join(__dirname, 'data');
+// Determine writable data directory (use /tmp on serverless environments like Vercel)
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NOW_REGION);
+const LOCAL_DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = isServerless ? path.join('/tmp', 'data') : LOCAL_DATA_DIR;
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const FAVORITES_FILE = path.join(DATA_DIR, 'favorites.json');
 
 // Ensure data directory and files exist
 function initDB() {
-    if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(USERS_FILE)) {
-        fs.writeFileSync(USERS_FILE, JSON.stringify([]));
-    }
-    if (!fs.existsSync(FAVORITES_FILE)) {
-        fs.writeFileSync(FAVORITES_FILE, JSON.stringify([]));
+    try {
+        if (!fs.existsSync(DATA_DIR)) {
+            fs.mkdirSync(DATA_DIR, { recursive: true });
+        }
+        
+        const localUsers = path.join(LOCAL_DATA_DIR, 'users.json');
+        if (!fs.existsSync(USERS_FILE)) {
+            const initialUsers = fs.existsSync(localUsers) ? fs.readFileSync(localUsers, 'utf8') : JSON.stringify([]);
+            fs.writeFileSync(USERS_FILE, initialUsers);
+        }
+        
+        const localFavorites = path.join(LOCAL_DATA_DIR, 'favorites.json');
+        if (!fs.existsSync(FAVORITES_FILE)) {
+            const initialFavs = fs.existsSync(localFavorites) ? fs.readFileSync(localFavorites, 'utf8') : JSON.stringify([]);
+            fs.writeFileSync(FAVORITES_FILE, initialFavs);
+        }
+    } catch (err) {
+        console.warn('DB initialization warning:', err.message);
     }
 }
 
