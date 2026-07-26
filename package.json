@@ -1,9 +1,12 @@
 {
-  "name": "destinara-travel-planner-root",
+  "name": "destinara-travel-planner",
   "version": "1.0.0",
-  "main": "project-04-portfolio-capstone/server.js",
+  "description": "Full-stack travel destination and weather context dashboard.",
+  "main": "server.js",
+  "type": "commonjs",
   "scripts": {
-    "start": "node project-04-portfolio-capstone/server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",
